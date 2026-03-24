@@ -10,10 +10,15 @@ jobs:
       - uses: actions/setup-python@v4
         with:
           python-version: "3.10"
-      - run: pip install mlflow numpy
+      - name: Install dependencies
+        run: pip install mlflow numpy dvc
+      - name: Handle DVC
+        run: |
+          dvc pull --force
+        continue-on-error: true # Prevents crash if DVC isn't fully set up yet
       - name: Train Model
         run: python train.py
-      - name: Save Results for Deploy
+      - name: Save Results
         uses: actions/upload-artifact@v4
         with:
           name: model-data
@@ -23,10 +28,10 @@ jobs:
 
   deploy:
     runs-on: ubuntu-latest
-    needs: validate # <--- This makes the jobs wait for each other
+    needs: validate
     steps:
       - uses: actions/checkout@v3
-      - name: Get Results from Validate
+      - name: Download Results
         uses: actions/download-artifact@v4
         with:
           name: model-data
