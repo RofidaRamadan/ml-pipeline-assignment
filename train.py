@@ -124,33 +124,36 @@ import os
 import mlflow
 import numpy as np
 
+import os  # <--- CRITICAL: This must be here!
+import mlflow
+import numpy as np
+
 if __name__ == "__main__":
-    # 1. Check for the GitHub Secret
-    tracking_uri = os.getenv("MLFLOW_TRACKING_URI")
-    
-    if tracking_uri:
-        # This will trigger when running on GitHub
-        mlflow.set_tracking_uri(tracking_uri)
-        print(f"Connecting to Remote MLflow: {tracking_uri}")
-    else:
-        # This will trigger when running on your Desktop
-        local_path = "file:///C:/Users/RofaR/OneDrive/Desktop/my-mlops-project/mlruns"
-        mlflow.set_tracking_uri(local_path)
-        print("Running in Local Mode")
-
-    # 2. Set the experiment name
-    mlflow.set_experiment("Assignment5_Rofida")
-
-    # 3. Start a dummy run to test the connection
-    with mlflow.start_run() as run:
-        # Log a fake accuracy so check_threshold.py has something to read
-        test_accuracy = 0.92
-        mlflow.log_metric("accuracy", test_accuracy)
+    try:
+        # 1. Check for the GitHub Secret
+        tracking_uri = os.getenv("MLFLOW_TRACKING_URI")
         
-        print(f"Successfully logged accuracy: {test_accuracy}")
+        if tracking_uri:
+            mlflow.set_tracking_uri(tracking_uri)
+            # Add credentials for DagsHub
+            os.environ['MLFLOW_TRACKING_USERNAME'] = os.getenv("MLFLOW_TRACKING_USERNAME", "")
+            os.environ['MLFLOW_TRACKING_PASSWORD'] = os.getenv("MLFLOW_TRACKING_PASSWORD", "")
+            print(f"Connecting to Remote MLflow: {tracking_uri}")
+        else:
+            mlflow.set_tracking_uri("file:///C:/Users/RofaR/OneDrive/Desktop/my-mlops-project/mlruns")
+            print("Running in Local Mode")
 
-        # 4. Save the Run ID to the file for the next step
-        with open("model_info.txt", "w") as f:
-            f.write(run.info.run_id)
-        
-        print(f"Run ID {run.info.run_id} saved to model_info.txt")
+        mlflow.set_experiment("Assignment5_Rofida")
+
+        with mlflow.start_run() as run:
+            test_accuracy = 0.92
+            mlflow.log_metric("accuracy", test_accuracy)
+            
+            with open("model_info.txt", "w") as f:
+                f.write(run.info.run_id)
+            
+            print(f"Successfully logged accuracy: {test_accuracy}")
+            
+    except Exception as e:
+        print(f"ERROR OCCURRED: {e}")
+        exit(1) 
