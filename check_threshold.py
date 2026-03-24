@@ -138,7 +138,7 @@ mlflow.set_tracking_uri("file://" + tracking_path)
 
 try:
     if not os.path.exists("model_info.txt"):
-        print("❌ ERROR: model_info.txt was not found in the deploy job!")
+        print(" ERROR: model_info.txt was not found in the deploy job!")
         sys.exit(1)
 
     with open("model_info.txt", "r") as f:
