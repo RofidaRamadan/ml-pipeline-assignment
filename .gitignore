@@ -1,4 +1,9 @@
+venv/
+.venv/
 mlruns/
+mlflow.db
 __pycache__/
 *.pyc
 .DS_Store
+.env
+model_info.txt

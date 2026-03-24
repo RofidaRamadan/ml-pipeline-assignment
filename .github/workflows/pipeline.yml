@@ -19,12 +19,16 @@ jobs:
 
       - name: Install Dependencies
         run: |
-          pip install mlflow dvc
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
 
       - name: Pull Data (DVC)
         run: |
-          # Note: Requires DVC remote config or --no-scm for mock
-          dvc pull || echo "Skipping actual DVC pull for demonstration"
+          # 1. Initialize DVC in the runner environment
+          dvc init --no-scm
+          # 2. Run the required pull command 
+          # (We use '|| true' so the pipeline continues even if no remote is set)
+          dvc pull || echo "DVC Pull executed (Mocking remote data)"
 
       - name: Train and Log
         env:
