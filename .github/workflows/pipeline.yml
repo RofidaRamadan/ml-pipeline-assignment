@@ -88,6 +88,7 @@ jobs:
         with:
           python-version: "3.10"
 
+      # We add 'dagshub' here to make authentication easier
       - name: Install Dependencies
         run: |
           pip install mlflow dagshub numpy
@@ -101,5 +102,8 @@ jobs:
 
       - name: Check Threshold
         env:
+          # IMPORTANT: We need all 3 secrets here too!
           MLFLOW_TRACKING_URI: ${{ secrets.MLFLOW_TRACKING_URI }}
+          MLFLOW_TRACKING_USERNAME: ${{ secrets.MLFLOW_TRACKING_USERNAME }}
+          MLFLOW_TRACKING_PASSWORD: ${{ secrets.MLFLOW_TRACKING_PASSWORD }}
         run: python check_threshold.py

@@ -162,6 +162,11 @@ import os
 import mlflow
 
 if __name__ == "__main__":
+    uri = os.getenv("MLFLOW_TRACKING_URI")
+    print(f"DEBUG: The URI found is: {uri}")
+    
+    if not uri:
+        print("CRITICAL: The URI is EMPTY! Check your GitHub Secrets and YAML.")
     # 1. Setup MLflow
     # This automatically uses your GitHub Secret
     uri = os.getenv("MLFLOW_TRACKING_URI")
